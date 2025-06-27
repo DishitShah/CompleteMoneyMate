@@ -42,6 +42,9 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get("/", (req, res) => {
+res.send("Welcome to MoneyMate Backend! Use the API to manage your finances.");});
+
 // 🗄️ Database Connection
 const connectDB = async () => {
   try {
@@ -1035,15 +1038,16 @@ app.post("/api/streak", authMiddleware, async (req, res) => {
 
     user.lastCheckIn = today;
     if (
-    user.streak === 7 &&
-    !user.badges.some((b) => b.name === "Streak Master")
-  ) {
-    user.badges.push({
-      name: "Streak Master",
-      icon: "🔥",
-      earnedAt: new Date(),
-    });
-  }
+      user.streak >= 7 &&
+      !user.badges.some((b) => b.name === "Streak Master")
+    ) {
+      user.badges.push({
+        name: "Streak Master",
+        icon: "🔥",
+        earnedAt: new Date(),
+      });
+    }
+
     await user.save();
 
     res.json({
@@ -1058,9 +1062,7 @@ app.post("/api/streak", authMiddleware, async (req, res) => {
       message: "Server error updating streak",
     });
   }
-  
 });
-
 // 🧠 AI Assistant Routes
 
 // Ask AI
