@@ -1024,6 +1024,16 @@ app.post("/api/streak", authMiddleware, async (req, res) => {
     }
 
     user.lastCheckIn = today;
+    if (
+    user.streak === 7 &&
+    !user.badges.some((b) => b.name === "Streak Master")
+  ) {
+    user.badges.push({
+      name: "Streak Master",
+      icon: "🔥",
+      earnedAt: new Date(),
+    });
+  }
     await user.save();
 
     res.json({
@@ -1038,16 +1048,7 @@ app.post("/api/streak", authMiddleware, async (req, res) => {
       message: "Server error updating streak",
     });
   }
-  if (
-    user.streak === 7 &&
-    !user.badges.some((b) => b.name === "Streak Master")
-  ) {
-    user.badges.push({
-      name: "Streak Master",
-      icon: "🔥",
-      earnedAt: new Date(),
-    });
-  }
+  
 });
 
 // 🧠 AI Assistant Routes
