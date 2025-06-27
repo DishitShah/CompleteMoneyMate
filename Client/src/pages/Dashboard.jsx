@@ -183,7 +183,7 @@ const SetNewGoalCard = ({ onSave }) => {
     setSaving(true);
     setError("");
     try {
-      const res = await fetch("${import.meta.env.VITE_API_URL}/api/savings/new-goal", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/savings/new-goal`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -411,7 +411,7 @@ const Dashboard = () => {
       }
       try {
         // Try dashboard data first
-        let dashboardRes = await fetch("${import.meta.env.VITE_API_URL}/api/dashboard", {
+        let dashboardRes = await fetch(`${import.meta.env.VITE_API_URL}/api/dashboard`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         let dashboardData = await dashboardRes.json();
@@ -449,7 +449,7 @@ const Dashboard = () => {
           setLoading(false);
           if (!d.user.onboardingCompleted) {
             // Prefill onboarding form with profile
-            const res = await fetch("${import.meta.env.VITE_API_URL}/api/auth/me", {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
               headers: { Authorization: `Bearer ${token}` },
             });
             const data = await res.json();
@@ -479,7 +479,7 @@ const Dashboard = () => {
           return;
         }
         // Fallback: fetch profile (for onboarding/dummy)
-        const res = await fetch("${import.meta.env.VITE_API_URL}/api/auth/me", {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -624,7 +624,7 @@ const Dashboard = () => {
         reminderFreq: formData.reminderFreq,
         motivation: formData.motivation,
       };
-      const res = await fetch("${import.meta.env.VITE_API_URL}/api/onboarding", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/onboarding`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -649,7 +649,7 @@ const Dashboard = () => {
   const refreshDashboard = async () => {
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch("${import.meta.env.VITE_API_URL}/api/dashboard", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/dashboard`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const dash = await res.json();
@@ -694,7 +694,7 @@ const Dashboard = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("${import.meta.env.VITE_API_URL}/api/finance/income", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/finance/income`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -754,7 +754,7 @@ const Dashboard = () => {
     }
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("${import.meta.env.VITE_API_URL}/api/finance/expense", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/finance/expense`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -810,7 +810,7 @@ const Dashboard = () => {
     }
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("${import.meta.env.VITE_API_URL}/api/savings/new-goal", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/savings/new-goal`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -60,14 +60,14 @@ const Auth = () => {
     try {
       let endpoint, payload;
       if (formType === 'signup') {
-        endpoint = '/api/auth/signup';
+        endpoint = `${import.meta.env.VITE_API_URL}/api/auth/signup`;
         payload = {
           name: form.name,
           email: form.email,
           password: form.password
         };
       } else {
-        endpoint = '/api/auth/login';
+        endpoint = `${import.meta.env.VITE_API_URL}/api/auth/login`;
         payload = {
           email: form.email,
           password: form.password
@@ -116,9 +116,14 @@ const Auth = () => {
       setForgotSubmitted(false);
       return;
     }
+    if (password.length < 6) {
+  setForgotError('Password must be at least 6 characters.');
+  setForgotSubmitted(false);
+  return;
+}
 
     try {
-      await axios.post('/api/auth/forgot-password', { email, password });
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/forgot-password`, { email, password });
       setForgotSuccess('Password changed! You can now log in.');
     } catch (err) {
       setForgotError(err.response?.data?.message || 'Failed to change password.');

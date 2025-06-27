@@ -7,7 +7,7 @@ export default function SetNewGoalCard({ onSave }) {
 
   const handleSave = async () => {
     if (!goalName || !targetAmount || !targetDate) return alert("Fill all fields!");
-    await fetch('${import.meta.env.VITE_API_URL}/api/savings/new-goal', {
+    await fetch(`${import.meta.env.VITE_API_URL}/api/savings/new-goal`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
       body: JSON.stringify({ goalName, targetAmount, targetDate }),

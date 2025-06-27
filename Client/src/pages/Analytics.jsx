@@ -21,10 +21,10 @@ const Analytics = () => {
       const headers = { Authorization: `Bearer ${token}` };
       // fallback: if lastmonth/lastweek is not supported, this will just be null/undefined
       const [month, lastMonthRes, week, lastWeekRes] = await Promise.all([
-        fetch('${import.meta.env.VITE_API_URL}/api/analytics?period=month', { headers }).then(r => r.json()).catch(() => null),
-        fetch('${import.meta.env.VITE_API_URL}/api/analytics?period=lastmonth', { headers }).then(r => r.json()).catch(() => null),
-        fetch('${import.meta.env.VITE_API_URL}/api/analytics?period=week', { headers }).then(r => r.json()).catch(() => null),
-        fetch('${import.meta.env.VITE_API_URL}/api/analytics?period=lastweek', { headers }).then(r => r.json()).catch(() => null),
+        fetch(`${import.meta.env.VITE_API_URL}/api/analytics?period=month`, { headers }).then(r => r.json()).catch(() => null),
+        fetch(`${import.meta.env.VITE_API_URL}/api/analytics?period=lastmonth`, { headers }).then(r => r.json()).catch(() => null),
+        fetch(`${import.meta.env.VITE_API_URL}/api/analytics?period=week`, { headers }).then(r => r.json()).catch(() => null),
+        fetch(`${import.meta.env.VITE_API_URL}/api/analytics?period=lastweek`, { headers }).then(r => r.json()).catch(() => null),
       ]);
       setAnalytics(month?.analytics);
       setLastMonth(lastMonthRes?.analytics);

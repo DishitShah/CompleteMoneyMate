@@ -24,7 +24,7 @@ const Profile = () => {
 const handleDownloadTransactions = async () => {
   try {
     const token = localStorage.getItem('token');
-    const res = await fetch('${import.meta.env.VITE_API_URL}/api/transactions/export', {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/transactions/export`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (!res.ok) throw new Error('Failed to download transactions');
@@ -46,7 +46,7 @@ const handleDownloadTransactions = async () => {
   const fetchUserData = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('${import.meta.env.VITE_API_URL}/api/auth/me', {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -101,7 +101,7 @@ const handleDownloadTransactions = async () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.patch('/api/auth/me', editForm, {
+      const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/auth/me`, editForm, {
         headers: {
           Authorization: `Bearer ${token}`
         }
