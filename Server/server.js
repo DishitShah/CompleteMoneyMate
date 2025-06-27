@@ -405,6 +405,16 @@ app.post("/api/auth/login", async (req, res) => {
     }
 
     user.lastCheckIn = today;
+    if (
+    user.streak === 7 &&
+    !user.badges.some((b) => b.name === "Streak Master")
+  ) {
+    user.badges.push({
+      name: "Streak Master",
+      icon: "🔥",
+      earnedAt: new Date(),
+    });
+  }
     await user.save();
 
     res.json({
