@@ -1528,7 +1528,7 @@ app.get("/api/suggestions", authMiddleware, async (req, res) => {
     const suggestions = [];
     if (biggestExpense) {
       suggestions.push(
-        `Your biggest expense this month is "${biggestExpense[0]}" (₹${biggestExpense[1]}). Consider setting a limit or tracking it closely!`
+        `Your biggest expense this month is "${biggestExpense[0]}" ($${biggestExpense[1]}). Consider setting a limit or tracking it closely!`
       );
     }
     if (goalProgress) suggestions.push(goalProgress);
