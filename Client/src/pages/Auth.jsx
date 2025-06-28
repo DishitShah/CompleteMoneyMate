@@ -95,7 +95,7 @@ const Auth = () => {
 
   // Google OAuth handler
   const handleGoogleLogin = () => {
-    window.location.href = '/api/auth/google';
+    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`;
   };
 
   // Forgot Password logic (no token, just email+password)
