@@ -82,7 +82,7 @@ const Header = () => {
         )}
         <div className="bot-logo">
           <img
-            src="src/photos/black_circle_360x360.png"
+            src="\black_circle_360x360.png"
             alt="MoneyMate Bot"
             className="bot-icon"
             style={{ cursor: "pointer" }}
