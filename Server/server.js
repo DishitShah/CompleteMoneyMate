@@ -23,7 +23,7 @@ app.use(
     origin: [
       "http://localhost:3000",
       "http://localhost:5173",
-      "https://moneymate.app",
+      process.env.FRONTEND_URL,
     ],
     credentials: true,
   })
