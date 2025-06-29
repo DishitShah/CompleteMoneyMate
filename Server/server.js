@@ -1610,12 +1610,13 @@ app.use((req, res) => {
 
 // 🚀 Server Startup
 const PORT = process.env.PORT || 5000;
+const HOST = '0.0.0.0';
 
 const startServer = async () => {
   try {
     await connectDB();
 
-    app.listen(PORT, () => {
+    app.listen(PORT,HOST, () => {
       console.log(`
 🚀 MoneyMate Backend Server Started Successfully!
 📡 Server running on port ${PORT}
