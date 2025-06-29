@@ -1215,26 +1215,22 @@ app.post("/api/voice-assistant", authMiddleware, async (req, res) => {
       .slice(0, 5)
       .map(
         (t) =>
-          `${t.type}: ₹${t.amount} for ${t.category} (${
-            t.description
-          }) on ${new Date(t.date).toLocaleDateString()}`
+          `${t.type}: $${t.amount} for ${t.category} (${t.description}) on ${new Date(t.date).toLocaleDateString()}`
       )
       .join(", ");
     const activeGoals = user.savingsGoals
       .filter((g) => !g.isCompleted)
       .map(
         (g) =>
-          `${g.goalName} (₹${g.currentSaved}/₹${
-            g.targetAmount
-          }, target: ${new Date(g.targetDate).toLocaleDateString()})`
+          `${g.goalName} ($${g.currentSaved}/$${g.targetAmount}, target: ${new Date(g.targetDate).toLocaleDateString()})`
       )
       .join(", ");
 
     const context = `
 User Profile:
 - Name: ${user.name}
-- Current Balance: ₹${user.currentBalance}
-- Monthly Budget: ₹${user.monthlyBudget}
+- Current Balance: $${user.currentBalance}
+- Monthly Budget: $${user.monthlyBudget}
 - XP Level: ${user.level}
 - Streak: ${user.streak}
 - Active Goals: ${activeGoals}
@@ -1242,8 +1238,9 @@ User Profile:
 `;
 
     const prompt = `You are MoneyMate, a fun and friendly AI financial coach for Gen Z and millennials. 
-You speak casually, use emojis, and give practical money advice. 
+You speak casually and give practical money advice. 
 Keep responses under 100 words and be encouraging.
+Do not use emojis.
 
 ${context}
 
@@ -1272,7 +1269,7 @@ Respond as MoneyMate:`;
           },
         }
       );
-      aiAnswer = groqRes.data?.choices?.[0]?.message?.content;
+      aiAnswer = groqRes.data?.choices?.[0]?.message?.content || "";
     } catch (groqError) {
       if (groqError.response) {
         console.error("🔴 Groq API Error:", groqError.response.data);
@@ -1311,8 +1308,14 @@ Respond as MoneyMate:`;
       });
     }
 
+    // Remove emojis from the answer
+    const answerNoEmoji = aiAnswer.replace(
+      /([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uD83C-\uDBFF\uDC00-\uDFFF]|\uFE0F|\u200D|\p{Extended_Pictographic})/gu,
+      ""
+    ).replace(/₹/g, "$"); // Also replace any stray ₹
+
     await addXP(user._id, 5, "AI Voice interaction");
-    res.json({ success: true, answer: aiAnswer }); // <-- Only send text!
+    res.json({ success: true, answer: answerNoEmoji });
   } catch (error) {
     console.error(
       "🔴 Voice Assistant Unexpected Error:",
@@ -1321,7 +1324,6 @@ Respond as MoneyMate:`;
     res.status(500).json({ success: false, message: "Voice assistant error" });
   }
 });
-
 
 // 📊 Analytics Routes
 
