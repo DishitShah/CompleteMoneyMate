@@ -1,11 +1,10 @@
-import React, { useState, useRef,useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 const VoiceAssistant = () => {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [aiAnswer, setAiAnswer] = useState("");
   const [error, setError] = useState("");
-  const audioRef = useRef(null);
   const [smartSuggestions, setSmartSuggestions] = useState([]);
 
   useEffect(() => {
@@ -63,7 +62,18 @@ const VoiceAssistant = () => {
     recognition.start();
   };
 
-  // Call backend for AI + voice response
+  // Speak text using browser's Text-to-Speech (TTS)
+  const speak = (text) => {
+    if (!window.speechSynthesis) {
+      setError("Sorry, your browser does not support text-to-speech.");
+      return;
+    }
+    const utterance = new window.SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    window.speechSynthesis.speak(utterance);
+  };
+
+  // Call backend for AI response (text only) and speak the answer
   const getAIResponse = async (text) => {
     try {
       const token = localStorage.getItem("token");
@@ -79,11 +89,7 @@ const VoiceAssistant = () => {
       if (data.success) {
         setAiAnswer(data.answer);
         setError("");
-        // Play audio
-        if (audioRef.current) audioRef.current.pause();
-        const audio = new Audio(data.audio);
-        audioRef.current = audio;
-        audio.play();
+        speak(data.answer); // Use browser TTS
       } else {
         setAiAnswer("");
         setError("Voice assistant error");
@@ -197,6 +203,10 @@ const VoiceAssistant = () => {
             </div>
           )}
         </div>
+        <p style={{ color: "#888", fontSize: 14, marginTop: 30, textAlign: "center" }}>
+          <b>Note:</b> Voice recognition and text-to-speech run entirely in your browser.<br />
+          For best results, use Chrome or Edge.
+        </p>
       </div>
     </div>
   );
