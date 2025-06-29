@@ -50,15 +50,6 @@ const CARDS = [
     title: "🏆 Challenges Accepted",
     body: (
       <>
-        <b>✅ Voice AI Challenge</b>
-        <ul>
-          <li>We integrated <b>ElevenLabs</b> to create a <b>conversational finance coach</b>. Users can:</li>
-          <ul>
-            <li>Speak their queries</li>
-            <li>Get smart, contextual responses</li>
-            <li>Enjoy a daily "talk with your wallet" experience</li>
-          </ul>
-        </ul>
         <b>✅ Deploy Challenge</b>
         <ul>
           <li><b>MoneyMate</b> is deployed on <b>Netlify</b> using their free tier. This allows:</li>
@@ -68,6 +59,8 @@ const CARDS = [
             <li>SSL security & performance optimization</li>
           </ul>
         </ul>
+         <b>✅ Voice AI Challenge[Partially]</b>
+        <ul> <li>We integrated <b>ElevenLabs</b> to create a <b>conversational finance coach</b> in our development and testing environments. Users could:</li> <ul> <li>Speak their queries</li> <li>Get smart, contextual responses</li> <li>Enjoy a daily "talk with your wallet" experience</li> </ul> <li> <b>Note:</b> ElevenLabs is not free for production use. Therefore, in the production version, we replaced ElevenLabs with the <b>Web Speech API</b> (built into modern browsers) to ensure continued voice functionality for all users. </li> </ul>
       </>
     ),
   },

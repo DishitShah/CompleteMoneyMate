@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useRef } from "react";
+import Confetti from "react-confetti";
 
 // Transaction modals (GEN Z style)
 const TransactionModal = ({
@@ -92,6 +93,7 @@ const TransactionModal = ({
     </div>
   );
 };
+
 // --- SavingsGoalCard ---
 const SavingsGoalCard = ({
   goalName,
@@ -360,7 +362,7 @@ const Dashboard = () => {
   const [lastAction, setLastAction] = useState(null);
   const [newGoalName, setNewGoalName] = useState("");
   const [newGoalAmount, setNewGoalAmount] = useState("");
-
+  const [showCelebration, setShowCelebration] = useState(false);
   const [userData, setUserData] = useState({
     name: "",
     ageGroup: "",
@@ -551,6 +553,7 @@ const Dashboard = () => {
     if (!loading && !profileCompleted) setShowOnboarding(true);
   }, [loading, profileCompleted]);
 
+  
   // --- Form Handlers ---
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
@@ -860,9 +863,46 @@ const Dashboard = () => {
     profileCompleted && goalName.toLowerCase().includes("trip") ? "✈️" : "🎮";
   const goalAchieved = goalTarget > 0 && goalCurrent >= goalTarget;
 
-  if (loading) return <div>Loading...</div>;
+  const prevGoalAchieved = useRef(false);
+  useEffect(() => {
+    if (goalAchieved && !prevGoalAchieved.current) {
+      setShowCelebration(true);
+      const timer = setTimeout(() => setShowCelebration(false), 5000);
+      return () => clearTimeout(timer);
+    }
+    prevGoalAchieved.current = goalAchieved;
+  }, [goalAchieved]);
 
-  return (
+ if (loading) return <div>Loading...</div>;
+
+return (
+  <>
+    {showCelebration && (
+      <div
+        style={{
+          position: "fixed",
+          zIndex: 9999,
+          left: 0,
+          top: 0,
+          width: "100vw",
+          height: "100vh",
+          background: "rgba(255,255,255,0.96)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column"
+        }}
+      >
+        <Confetti width={window.innerWidth} height={window.innerHeight} />
+        <h1 style={{ fontSize: 48, color: "#43a047", marginBottom: 24 }}>
+          🎉 Goal Achieved! 🎉
+        </h1>
+        <p style={{ fontSize: 24 }}>
+          Congratulations on reaching your savings goal!
+        </p>
+      </div>
+    )}
+
     <div className="page active">
       <div className="dashboard">
         {/* Onboarding Prompt if incomplete */}
@@ -1635,6 +1675,7 @@ const Dashboard = () => {
         }
       `}</style>
     </div>
+  </>
   );
 };
 
