@@ -1209,7 +1209,7 @@ app.post("/api/voice-assistant", authMiddleware, async (req, res) => {
 
     const user = await User.findById(req.user._id);
 
-    // Build user context for OpenAI
+    // Build user context for AI
     const recentTransactions = user.transactions
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, 5)
@@ -1220,7 +1220,6 @@ app.post("/api/voice-assistant", authMiddleware, async (req, res) => {
           }) on ${new Date(t.date).toLocaleDateString()}`
       )
       .join(", ");
-
     const activeGoals = user.savingsGoals
       .filter((g) => !g.isCompleted)
       .map(
@@ -1258,7 +1257,7 @@ Respond as MoneyMate:`;
       groqRes = await axios.post(
         "https://api.groq.com/openai/v1/chat/completions",
         {
-          model: LLM_MODEL, // e.g. 'llama3-70b-8192'
+          model: LLM_MODEL,
           messages: [
             { role: "system", content: prompt },
             { role: "user", content: question },
@@ -1312,71 +1311,8 @@ Respond as MoneyMate:`;
       });
     }
 
-    // 2. Get audio from ElevenLabs
-    let audioUrl;
-    try {
-      const voiceRes = await axios.post(
-        "https://api.elevenlabs.io/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL",
-        {
-          text: aiAnswer.substring(0, 500),
-          voice_settings: { stability: 0.5, similarity_boost: 0.75 },
-        },
-        {
-          headers: {
-            "xi-api-key": process.env.ELEVENLABS_API_KEY,
-            "Content-Type": "application/json",
-          },
-          responseType: "arraybuffer",
-        }
-      );
-      const audioBase64 = Buffer.from(voiceRes.data).toString("base64");
-      audioUrl = `data:audio/mpeg;base64,${audioBase64}`;
-    } catch (elevenLabsError) {
-  if (elevenLabsError.response) {
-    let data = elevenLabsError.response.data;
-    if (Buffer.isBuffer(data)) {
-      const text = data.toString("utf-8");
-      try {
-        const json = JSON.parse(text);
-        console.error("🔴 ElevenLabs Error (JSON):", json);
-      } catch {
-        console.error("🔴 ElevenLabs Error (text):", text);
-      }
-    } else {
-      console.error("🔴 ElevenLabs Error:", data);
-    }
-    if (elevenLabsError.response.status === 401) {
-      return res.status(500).json({
-        success: false,
-        message: "ElevenLabs API key is invalid or unauthorized.",
-      });
-    }
-    if (elevenLabsError.response.status === 429) {
-      return res.status(500).json({
-        success: false,
-        message: "ElevenLabs quota exceeded or rate limited.",
-      });
-    }
-    return res.status(500).json({
-      success: false,
-      message:
-        "ElevenLabs error: " +
-        (data.detail || "Unknown error"),
-    });
-  } else {
-    console.error("🔴 ElevenLabs Error:", elevenLabsError.message);
-    return res.status(500).json({
-      success: false,
-      message: "ElevenLabs error: " + elevenLabsError.message,
-    });
-  }
-}
-
-    // ...rest of your success response logic
-
     await addXP(user._id, 5, "AI Voice interaction");
-
-    res.json({ success: true, answer: aiAnswer, audio: audioUrl });
+    res.json({ success: true, answer: aiAnswer }); // <-- Only send text!
   } catch (error) {
     console.error(
       "🔴 Voice Assistant Unexpected Error:",
@@ -1385,6 +1321,7 @@ Respond as MoneyMate:`;
     res.status(500).json({ success: false, message: "Voice assistant error" });
   }
 });
+
 
 // 📊 Analytics Routes
 
