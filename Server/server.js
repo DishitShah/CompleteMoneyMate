@@ -14,6 +14,9 @@ import session from "express-session";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
+let lastCompletedGoal = null;
+let goalCompleted = false;
+
 dotenv.config();
 const app = express();
 const LLM_MODEL = process.env.LLM_MODEL || "llama3-70b-8192"; // Or another Groq-supported model
@@ -679,6 +682,9 @@ const getDashboardData = async (user) => {
     if (!goal.isCompleted && goal.currentSaved >= goal.targetAmount) {
       goal.isCompleted = true;
       goalCompleted = true;
+      lastCompletedGoal = { ...goal.toObject() };
+      
+      
       // Add Savings Hero badge if not already earned
       if (!user.badges.some((b) => b.name === "Savings Hero")) {
         user.badges.push({
@@ -741,6 +747,7 @@ const getDashboardData = async (user) => {
     },
     goals: activeGoals,
     recentTransactions,
+    lastCompletedGoal,
     quickStats: {
       totalSaved: user.totalSaved,
       currentBalance: user.currentBalance,

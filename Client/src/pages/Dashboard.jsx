@@ -777,6 +777,15 @@ const Dashboard = () => {
       });
       const data = await res.json();
       if (data.success) {
+        const mainGoal = data.dashboard.goals && data.dashboard.goals[0];
+      if (
+        mainGoal &&
+        mainGoal.currentSaved >= mainGoal.targetAmount &&
+        mainGoal.targetAmount > 0
+      ) {
+        setShowCelebration(true);
+        setTimeout(() => setShowCelebration(false), 5000);
+      }
         if (data.dashboard) {
           const d = data.dashboard;
           const mainGoal = d.goals && d.goals[0] ? d.goals[0] : null;
