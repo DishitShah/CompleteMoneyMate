@@ -709,6 +709,16 @@ const Dashboard = () => {
       console.log("Income API response:", data);
 
       if (data.success) {
+         // --- CELEBRATION LOGIC ---
+      const mainGoal = data.dashboard.goals && data.dashboard.goals[0];
+      if (
+        mainGoal &&
+        mainGoal.currentSaved >= mainGoal.targetAmount &&
+        mainGoal.targetAmount > 0
+      ) {
+        setShowCelebration(true);
+        setTimeout(() => setShowCelebration(false), 5000);
+      }
         if (data.dashboard) {
           const d = data.dashboard;
           const mainGoal = d.goals && d.goals[0] ? d.goals[0] : null;
@@ -865,6 +875,7 @@ const Dashboard = () => {
 
   const prevGoalAchieved = useRef(false);
   useEffect(() => {
+    console.log("goalAchieved:", goalAchieved, "prev:", prevGoalAchieved.current, "goalCurrent:", goalCurrent, "goalTarget:", goalTarget);
     if (goalAchieved && !prevGoalAchieved.current) {
       setShowCelebration(true);
       const timer = setTimeout(() => setShowCelebration(false), 5000);
