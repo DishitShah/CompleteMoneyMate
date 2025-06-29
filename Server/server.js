@@ -1332,34 +1332,45 @@ Respond as MoneyMate:`;
       const audioBase64 = Buffer.from(voiceRes.data).toString("base64");
       audioUrl = `data:audio/mpeg;base64,${audioBase64}`;
     } catch (elevenLabsError) {
-      if (elevenLabsError.response) {
-        console.error("🔴 ElevenLabs Error:", elevenLabsError.response.data);
-        if (elevenLabsError.response.status === 401) {
-          return res.status(500).json({
-            success: false,
-            message: "ElevenLabs API key is invalid or unauthorized.",
-          });
-        }
-        if (elevenLabsError.response.status === 429) {
-          return res.status(500).json({
-            success: false,
-            message: "ElevenLabs quota exceeded or rate limited.",
-          });
-        }
-        return res.status(500).json({
-          success: false,
-          message:
-            "ElevenLabs error: " +
-            (elevenLabsError.response.data.detail || "Unknown error"),
-        });
-      } else {
-        console.error("🔴 ElevenLabs Error:", elevenLabsError.message);
-        return res.status(500).json({
-          success: false,
-          message: "ElevenLabs error: " + elevenLabsError.message,
-        });
+  if (elevenLabsError.response) {
+    let data = elevenLabsError.response.data;
+    if (Buffer.isBuffer(data)) {
+      const text = data.toString("utf-8");
+      try {
+        const json = JSON.parse(text);
+        console.error("🔴 ElevenLabs Error (JSON):", json);
+      } catch {
+        console.error("🔴 ElevenLabs Error (text):", text);
       }
+    } else {
+      console.error("🔴 ElevenLabs Error:", data);
     }
+    if (elevenLabsError.response.status === 401) {
+      return res.status(500).json({
+        success: false,
+        message: "ElevenLabs API key is invalid or unauthorized.",
+      });
+    }
+    if (elevenLabsError.response.status === 429) {
+      return res.status(500).json({
+        success: false,
+        message: "ElevenLabs quota exceeded or rate limited.",
+      });
+    }
+    return res.status(500).json({
+      success: false,
+      message:
+        "ElevenLabs error: " +
+        (data.detail || "Unknown error"),
+    });
+  } else {
+    console.error("🔴 ElevenLabs Error:", elevenLabsError.message);
+    return res.status(500).json({
+      success: false,
+      message: "ElevenLabs error: " + elevenLabsError.message,
+    });
+  }
+}
 
     // ...rest of your success response logic
 
