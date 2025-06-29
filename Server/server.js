@@ -20,11 +20,7 @@ const LLM_MODEL = process.env.LLM_MODEL || "llama3-70b-8192"; // Or another Groq
 // 🛡️ Middleware
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:5173",
-      process.env.FRONTEND_URL,
-    ],
+    origin:process.env.FRONTEND_URL,
     credentials: true,
   })
 );
